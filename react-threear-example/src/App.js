@@ -25,7 +25,9 @@ class App extends React.Component {
     document.body.appendChild( renderer.domElement );
 
     var markerGroup = new THREE.Group();
+    var fixedGroup = new THREE.Group();
 		scene.add(markerGroup);
+		scene.add(fixedGroup);
 
     var source = new THREEAR.Source({ renderer, camera });
 
@@ -33,16 +35,46 @@ class App extends React.Component {
         var geometry = new THREE.BoxGeometry( 1, 1, 1 );
         var material = new THREE.MeshNormalMaterial();
         var cube = new THREE.Mesh( geometry, material );
+        var cube2 = new THREE.Mesh( new THREE.BoxGeometry( 2, 2, 2 ), material );
         scene.add( cube );
-        markerGroup.add(cube)
+        scene.add( cube );
+        scene.add( cube2 );
+        markerGroup.add(cube);
+        fixedGroup.add(cube2);
         var path = './data/patt.hiro';
         var patternMarker = new THREEAR.PatternMarker({
     					patternUrl: path,
     					markerObject: markerGroup
     				});
   	    controller.trackMarker(patternMarker);
+        let lulz = false;
+
+        console.log(controller.arController);
+        controller.arController.addEventListener('getMarker', function(ev) {
+          // if (!lulz) alert("Wow! I'm a Scorpio too!");
+          // console.log(ev.data);
+          // console.log(ev.data.marker);
+          // console.log('marker pos: ', ev.data.marker.pos);
+          // console.log(cube.position);
+          // console.log(markerGroup.position);
+          // console.log(fixedGroup.position);
+          fixedGroup.position.set(markerGroup.position.x, markerGroup.position.y, markerGroup.position.z);
+          // console.log(fixedGroup.position);
+          // cube.position.set(ev.data.marker.pos[0], ev.data.marker.pos[1], 4);
+          // console.log(cube.position);
+          // cube.applyMatrix4(ev.data.matrix);
+          lulz = true;
+        });
+
+
+
+
+
+        
+
 
     requestAnimationFrame(function animate(nowMsec){
+      console.log(camera.position);
         // measure time
 				var lastTimeMsec = lastTimeMsec || nowMsec-1000/60;
 				var deltaMsec = Math.min(200, nowMsec - lastTimeMsec);
